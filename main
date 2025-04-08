@@ -1,0 +1,6 @@
+package gestion__stock;
+
+public class Main {
+	public static void main(String[] args) {
+		new frameLogin();	
+	}}
