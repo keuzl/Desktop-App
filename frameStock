@@ -1,0 +1,506 @@
+package gestion__stock;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import net.proteanit.sql.DbUtils;
+import java.sql.*;
+import java.awt.event.*;
+
+public class frameStock {
+	private JFrame frame;
+	private JFrame quantityframe;
+	Connection c = null;
+	ResultSet rs = null;
+	JTable table1 = new JTable();
+	JTable table2 = new JTable();
+	
+	public frameStock() {
+		run();
+		update_table1();
+		}	
+	
+	private void update_table1() {
+		try {
+			c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			Statement pst = null;
+			String sql = "select * from produit";
+			pst = c.createStatement();
+			rs = pst.executeQuery(sql);
+			table1.setModel(DbUtils.resultSetToTableModel(rs));
+			
+		} catch( SQLException e1) { JOptionPane.showMessageDialog(null,e1);}
+	}
+	
+	private void update_table2() {
+		try {
+			c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			Statement pst = null;
+			String sql = "select id,libelle,prix_unitaire from produit";
+			pst = c.createStatement();
+			rs = pst.executeQuery(sql);
+			table2.setModel(DbUtils.resultSetToTableModel(rs));
+			
+		} catch( SQLException e2) { JOptionPane.showMessageDialog(null,e2);}
+	}	
+	
+	public void run() {
+			frame = new JFrame();
+			frame.setResizable(false);
+			frame.setBounds(100,0,1000, 740);
+			ImageIcon logo = new ImageIcon("C:\\Users\\user\\Desktop\\pharma_icon.jpg");
+			frame.setIconImage(logo.getImage());
+			frame.setTitle(" STOCK MANAGEMENT - GUI ");
+			frame.getContentPane().setBackground(new Color(118,221,221)); 
+			
+			
+			JLabel title_label = new JLabel("PHARMACY STOCK MANAGEMENT");
+			title_label.setBounds(154, 11, 642, 59);
+			title_label.setForeground(new Color(1,50, 32));
+			title_label.setFont(new Font("Poor Richard", Font.BOLD | Font.ITALIC, 25));
+			title_label.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			JPanel p1=new JPanel();
+		    p1.setLayout(null);
+		    
+		    JPanel p2=new JPanel();
+		    p2.setLayout(null);
+		    
+		    JTabbedPane tp=new JTabbedPane();
+		    tp.setBackground(Color.LIGHT_GRAY);
+			tp.setBounds(20, 75, 926, 620);  
+			tp.add("PRODUIT",p1);
+			
+			JPanel panel1 = new JPanel();
+			panel1.setBorder(null);
+			panel1.setBounds(10, 11, 901, 570);
+			p1.add(panel1);
+			panel1.setLayout(null);
+			
+			JLabel id_label = new JLabel("ID");
+			id_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			id_label.setForeground(Color.BLACK);
+			id_label.setHorizontalAlignment(SwingConstants.CENTER);
+			id_label.setBounds(10, 25, 151, 40);
+			
+			
+			JLabel libelle_label = new JLabel("LIBELLE");
+			libelle_label.setHorizontalAlignment(SwingConstants.CENTER);
+			libelle_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			libelle_label.setBounds(10, 69, 151, 40);
+			
+			JLabel description_label = new JLabel("DESCRIPTION");
+			description_label.setHorizontalAlignment(SwingConstants.CENTER);
+			description_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			description_label.setBounds(10, 112, 151, 40);
+			
+			
+			JLabel prixunit_label = new JLabel("PRIX UNITAIRE");
+			prixunit_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			prixunit_label.setHorizontalAlignment(SwingConstants.CENTER);
+			prixunit_label.setBounds(10, 163, 151, 40);
+			
+			
+			JLabel quantite_label = new JLabel("QUANTITE");
+			quantite_label.setHorizontalAlignment(SwingConstants.CENTER);
+			quantite_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			quantite_label.setBounds(10, 200, 151, 40);
+			
+			
+			JLabel dateperemp_label = new JLabel("DATE PEREMPTION");
+			dateperemp_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			dateperemp_label.setHorizontalAlignment(SwingConstants.CENTER);
+			dateperemp_label.setBounds(10, 244, 151, 40);
+			
+			
+			JTextField id_textf = new JTextField();
+			id_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			id_textf.setBounds(226, 30, 194, 32);			
+			id_textf.setColumns(10);
+			
+			JTextField libelle_textf = new JTextField();
+			libelle_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			libelle_textf.setBounds(226, 74, 195, 32);			
+			libelle_textf.setColumns(10);
+			
+			JTextField description_textf = new JTextField();
+			description_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			description_textf.setBounds(226, 117, 194, 32);			
+			description_textf.setColumns(10);
+			
+			JTextField prixunit_textf = new JTextField();
+			prixunit_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			prixunit_textf.setBounds(226, 163, 194, 32);			
+			prixunit_textf.setColumns(10);
+			
+			JTextField quantite_textf = new JTextField();
+			quantite_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			quantite_textf.setBounds(226, 205, 194, 32);		
+			quantite_textf.setColumns(10);
+			
+			JTextField dateperemp_textf = new JTextField();
+			dateperemp_textf.setFont(new Font("Sitka Small", Font.PLAIN, 13));
+			dateperemp_textf.setBounds(226, 249, 194, 32);			
+			dateperemp_textf.setColumns(10);
+			
+			JButton ajout_button = new JButton("Ajouter Produit");
+			ajout_button.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			ajout_button.setBounds(565, 25, 238, 56);
+														
+			JButton modif_button = new JButton("Modifier Produit");
+			modif_button.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			modif_button.setBounds(565, 93, 238, 56);
+			
+						
+			JButton supp_button = new JButton("Supprimer Produit");
+			supp_button.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			supp_button.setBounds(565, 163, 238, 56);
+			
+			
+			JButton reset_button = new JButton("Reset");			
+			reset_button.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			reset_button.setBounds(565, 238, 238, 56);
+			
+			
+			JScrollPane sp1 = new JScrollPane();
+			sp1.setBounds(10, 324, 887, 230);
+			
+			table1 = new JTable();
+			sp1.setViewportView(table1);
+			table1.setModel(new DefaultTableModel(
+				new Object[][] {},
+				new String[] { "id", "libelle", "description", "prix unitaire", "quantite", "date peremption" } ));
+			
+			ajout_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+						PreparedStatement pst = null;
+						String sql = "INSERT INTO produit VALUES (?,?,?,?,?,?)";						
+						pst = c.prepareStatement(sql);
+						pst.setInt(1,Integer.valueOf(id_textf.getText()));
+						pst.setString(2,libelle_textf.getText());
+						pst.setString(3, description_textf.getText());
+						pst.setFloat(4, Float.valueOf(prixunit_textf.getText()));
+						pst.setInt(5, Integer.valueOf(quantite_textf.getText()));
+						pst.setString(6, dateperemp_textf.getText());
+						pst.executeUpdate();				
+						update_table1();
+						
+					} catch(SQLException e3) {JOptionPane.showMessageDialog(null, e3);}				
+				}
+			});
+			
+			modif_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+						PreparedStatement pst = null;
+						String val1 = id_textf.getText();
+						String val2 = libelle_textf.getText();
+						String val3 = description_textf.getText();
+						String val4 = prixunit_textf.getText();
+						String val5 = quantite_textf.getText();
+						String val6 = dateperemp_textf.getText();			
+						String sql = "update produit set id='"+val1+"',libelle='"+val2+"',description='"+val3+"',prix_unitaire='"+val4+"',quantite='"+val5+"',date_peremption='"+val6+"'where id='"+val1+"'";
+						pst = c.prepareStatement(sql);
+						pst.execute();
+						update_table1();
+												
+				         }catch(Exception e4){
+				        	 JOptionPane.showMessageDialog(null, e4);}
+					}});
+	 			
+			table1.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {                                   
+			    DefaultTableModel model = (DefaultTableModel) table1.getModel(); 
+			    int selectedRowIndex = table1.getSelectedRow(); 
+			    int id = (int) model.getValueAt(selectedRowIndex, 0); 		    
+			    try {
+			    	c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			    	Statement pst = null;
+			    	String sql = "Select * from produit where id='"+id+"' ";
+			    	pst = c.createStatement();
+			    	ResultSet rs = pst.executeQuery(sql);	
+					
+			        while(rs.next()){  
+			            id_textf.setText(rs.getString("id")); 
+			            libelle_textf.setText(rs.getString("libelle"));
+			            description_textf.setText(rs.getString("description"));
+			            prixunit_textf.setText(rs.getString("prix_unitaire"));
+			            quantite_textf.setText(rs.getString("quantite"));
+			            dateperemp_textf.setText(rs.getString("date_peremption"));
+			        }
+			    }catch(Exception e5) {JOptionPane.showMessageDialog(null, e5);} 
+				}}); 
+						                               			                                
+			supp_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+			        int row = table1.getSelectedRow();
+			        DefaultTableModel model= (DefaultTableModel)table1.getModel();
+			        String selected = model.getValueAt(row, 0).toString();
+			            if (row >= 0) {
+			                model.removeRow(row);
+			                try {
+			                	c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			                    PreparedStatement ps = c.prepareStatement("delete from produit where id='"+selected+"' ");
+			                    ps.executeUpdate();
+			                    update_table1();
+			                }
+			                catch (Exception e6) {
+			                    JOptionPane.showMessageDialog(null,e6);
+			                }           
+			            } }});
+			
+			reset_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+						id_textf.setText("");
+						libelle_textf.setText("");
+						description_textf.setText("");
+						prixunit_textf.setText("");
+						quantite_textf.setText("");
+						dateperemp_textf.setText("");		
+					}});
+
+			tp.add("COMMANDE",p2);
+			
+			JPanel panel2 = new JPanel();
+			panel2.setBounds(0, 0, 921, 592);
+			p2.add(panel2);
+			
+			JLabel cherchermed_label = new JLabel("Chercher medicament");
+			cherchermed_label.setBounds(10, 58, 160, 37);
+			cherchermed_label.setHorizontalAlignment(SwingConstants.CENTER);
+			cherchermed_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JTextField cherchermed_textf = new JTextField();
+			cherchermed_textf.setBounds(180, 54, 153, 40);
+			cherchermed_textf.setColumns(10);
+			
+			
+			JLabel commande_title = new JLabel("La Commande");
+			commande_title.setBounds(521, 57, 287, 37);
+			commande_title.setHorizontalAlignment(SwingConstants.CENTER);
+			commande_title.setFont(new Font("Sitka Small", Font.BOLD | Font.ITALIC, 20));
+			
+			JLabel client_label = new JLabel("Client");
+			client_label.setBounds(406, 142, 206, 37);
+			client_label.setHorizontalAlignment(SwingConstants.CENTER);
+			client_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JLabel date_label = new JLabel("Date");
+			date_label.setBounds(406, 193, 206, 37);
+			date_label.setHorizontalAlignment(SwingConstants.CENTER);
+			date_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JLabel produit_label = new JLabel("Produit");
+			produit_label.setBounds(406, 241, 206, 37);
+			produit_label.setHorizontalAlignment(SwingConstants.CENTER);
+			produit_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JLabel p_unit_label = new JLabel("Prix Unitaire");
+			p_unit_label.setBounds(406, 289, 206, 37);
+			p_unit_label.setHorizontalAlignment(SwingConstants.CENTER);
+			p_unit_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JLabel qte_label = new JLabel("Quantite");
+			qte_label.setBounds(406, 337, 206, 37);
+			qte_label.setHorizontalAlignment(SwingConstants.CENTER);
+			qte_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JLabel prixtotal_label = new JLabel("Prix Total");
+			prixtotal_label.setBounds(406, 385, 206, 37);
+			prixtotal_label.setHorizontalAlignment(SwingConstants.CENTER);
+			prixtotal_label.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			
+			JTextField client_textf = new JTextField();
+			client_textf.setBounds(634, 140, 206, 37);
+						
+			JTextField date_textf = new JTextField();
+			date_textf.setBounds(634, 193, 206, 37);
+			
+			JTextField produit_textf = new JTextField();
+			produit_textf.setBounds(634, 242, 206, 37);
+						
+			JTextField p_unit_textf = new JTextField();
+			p_unit_textf.setBounds(634, 290, 206, 37);
+
+			JTextField qte_textf = new JTextField();
+			qte_textf.setBounds(634, 337, 206, 37);
+			
+			JTextField prixtotal_textf = new JTextField();
+			prixtotal_textf.setBounds(634, 385, 206, 37);
+			
+			JButton validercommande_button = new JButton("Valider Commande");
+			validercommande_button.setFont(new Font("Sitka Small", Font.BOLD, 13));
+			validercommande_button.setBounds(633, 440, 206, 37);
+			
+			JScrollPane sp2 = new JScrollPane();
+			sp2.setBounds(10, 142, 323, 335);
+			
+			table2 = new JTable();
+			sp2.setViewportView(table2);
+			table2.setModel(new DefaultTableModel(
+				new Object[][] {},
+				new String[] { "id","libelle", "prix unitaire" } ));
+			
+			tp.addMouseListener(new MouseAdapter() {
+		    	@Override
+		    	public void mouseClicked(MouseEvent e) {
+		    		update_table2();
+		    	
+		    	}});
+			
+			cherchermed_textf.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+				    try {
+			            c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			            Statement pst = null;
+			            String lib = cherchermed_textf.getText();
+			            String sql = "SELECT  id,libelle, prix_unitaire FROM produit where libelle= '"+lib+"'";
+			            pst = c.createStatement();
+			            rs = pst.executeQuery(sql);
+			            table2.setModel(DbUtils.resultSetToTableModel(rs));
+			            } catch( SQLException e7) { 
+				          JOptionPane.showMessageDialog(null,e7);}
+			}});
+			
+			
+			table2.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {                                   
+			    DefaultTableModel model = (DefaultTableModel) table2.getModel(); 
+			    int selectedRowIndex = table2.getSelectedRow(); 
+			    int id = (int) model.getValueAt(selectedRowIndex, 0);     
+			    try {
+			    	c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			    	Statement pst = null;
+			    	String sql = "Select id,libelle, prix_unitaire from produit where id='"+id+"' ";
+			    	pst = c.createStatement();
+			    	ResultSet rs = pst.executeQuery(sql);	
+					
+			        while(rs.next()){  
+			            
+			            produit_textf.setText(rs.getString("libelle"));		       
+			            p_unit_textf.setText(rs.getString("prix_unitaire"));
+
+			        }
+			    }catch(Exception e8) {JOptionPane.showMessageDialog(null, e8);} 
+				}}); 
+				
+			
+			prixtotal_textf.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) { 				
+					String a = p_unit_textf.getText();
+					double prix_unit = Double.parseDouble(a);
+					String b = qte_textf.getText();
+					double qte = Double.parseDouble(b);			
+					Double total = prix_unit * qte;
+					String prix_total = total.toString();
+					prixtotal_textf.setText(prix_total);
+				}});
+			
+			
+			qte_textf.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) { 					
+					try {
+			            c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+			            Statement pst = null;
+			            String lib = produit_textf.getText();
+			            String sql = "SELECT quantite FROM produit where libelle= '"+lib+"'";
+			            pst = c.createStatement();
+			            rs = pst.executeQuery(sql); 		    		
+			            rs.next();	
+			            
+			            
+			            quantityframe = new JFrame();
+			            quantityframe.setResizable(false);
+			            quantityframe.setLocationRelativeTo(null);
+			         
+			    		
+			    		JOptionPane.showMessageDialog(quantityframe, "STOCK DISPONIBLE DU PRODUIT :  " +rs.getString(1)) ;
+			        
+					} catch( SQLException e9) { 
+				          JOptionPane.showMessageDialog(null,e9);}					
+				}});
+			
+				
+		
+			validercommande_button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						c = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","");
+						PreparedStatement pst = null;
+						PreparedStatement ps = null;
+						
+						String sql = "INSERT INTO commande VALUES (?,?,?,?,?,?)";						
+						pst = c.prepareStatement(sql);
+						pst.setString(1,client_textf.getText());
+						pst.setString(2,date_textf.getText());
+						pst.setString(3, produit_textf.getText());
+						pst.setDouble(4, Double.valueOf(p_unit_textf.getText()));
+						pst.setInt(5, Integer.valueOf(qte_textf.getText()));						
+						pst.setDouble(6,Double.valueOf(prixtotal_textf.getText()));					
+						pst.executeUpdate();				
+						
+						int qte = Integer.valueOf(qte_textf.getText());
+						String query = "update produit set quantite = quantite -'"+qte+"'where libelle='"+produit_textf.getText()+"'";
+						ps = c.prepareStatement(query);
+						ps.execute();
+						
+						update_table1();
+						update_table2();
+						JOptionPane.showMessageDialog(null, "Commande Validée.", "Commande", 2);
+						
+					} catch(SQLException e10) {JOptionPane.showMessageDialog(null, e10);}									
+			}});
+			
+			panel1.add(id_label);
+			panel1.add(libelle_label);
+			panel1.add(description_label);
+			panel1.add(prixunit_label);
+			panel1.add(quantite_label);
+			panel1.add(dateperemp_label);
+			
+			panel1.add(id_textf);
+			panel1.add(libelle_textf);
+			panel1.add(description_textf);
+			panel1.add(prixunit_textf);
+			panel1.add(quantite_textf);
+			panel1.add(dateperemp_textf);
+			
+			panel1.add(ajout_button);
+			panel1.add(modif_button);
+			panel1.add(supp_button);	
+			panel1.add(reset_button);
+			panel1.add(sp1);
+
+			panel2.setLayout(null);
+			panel2.add(sp2);
+			panel2.add(cherchermed_label);
+			panel2.add(cherchermed_textf);
+			panel2.add(commande_title);
+			panel2.add(client_label);
+			panel2.add(date_label);
+			panel2.add(produit_label);
+			panel2.add(p_unit_label);
+			panel2.add(qte_label);
+			panel2.add(prixtotal_label);
+			panel2.add(client_textf);
+			panel2.add(date_textf);
+			panel2.add(produit_textf);
+			panel2.add(p_unit_textf);
+			panel2.add(qte_textf);
+			panel2.add(prixtotal_textf);
+			panel2.add(validercommande_button);	
+			
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().setLayout(null);
+			frame.getContentPane().add(title_label);	    
+			frame.getContentPane().add(tp);	
+			frame.setVisible(true);		
+		    }	
+}
